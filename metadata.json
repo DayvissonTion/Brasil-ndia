@@ -1,0 +1,6 @@
+{
+  "name": "Brasilândia",
+  "description": "Brasilândia: A Chave dos 1000 Elos — Jogo de ação e aventura 3D autoral de Dayvisson Silva com 4 planos dimensionais, 9 personagens jogáveis, asas articuladas, combate elemental e salvamento na nuvem.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

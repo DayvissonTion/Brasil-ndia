@@ -1,0 +1,109 @@
+{
+  "entities": {
+    "GameSave": {
+      "title": "GameSave",
+      "description": "Cloud auto-save state for Brasilândia: A Chave dos 1000 Elos, scoped to the authenticated player.",
+      "type": "object",
+      "properties": {
+        "userId": {
+          "type": "string",
+          "description": "Authenticated Firebase UID owning this save slot."
+        },
+        "playerName": {
+          "type": "string",
+          "description": "Display name of the player."
+        },
+        "activeCharacterId": {
+          "type": "string",
+          "enum": [
+            "ever",
+            "silver",
+            "anciao",
+            "hamaya",
+            "enbraim",
+            "meyanga",
+            "gakumelos",
+            "guardiao",
+            "elo1000"
+          ],
+          "description": "Currently selected playable hero ID."
+        },
+        "keysCollected": {
+          "type": "integer",
+          "description": "Total luminous keys collected toward the 1000 Elos goal."
+        },
+        "enemiesDefeated": {
+          "type": "integer",
+          "description": "Lifetime count of defeated adversaries."
+        },
+        "mediumEnemiesCycle": {
+          "type": "integer",
+          "description": "Progress within the current 20-enemy dimensional portal cycle."
+        },
+        "currentRealmIndex": {
+          "type": "integer",
+          "description": "Current dimensional plane index (0=Brasilândia, 1=Plano Espiritual, 2=Plano Divino, 3=Paraíso dos 20 Mundos)."
+        },
+        "bossesDefeated": {
+          "type": "integer",
+          "description": "Number of times Meyanga has been defeated."
+        },
+        "satantiDowns": {
+          "type": "integer",
+          "description": "Number of times Satãnti Borô has been knocked down or defeated."
+        },
+        "keyTimerMaxSeconds": {
+          "type": "integer",
+          "description": "Current maximum time window (seconds) to collect keys, starting at 30s + 10s per Satãnti Borô knockdown."
+        },
+        "finalWarActive": {
+          "type": "boolean",
+          "description": "Whether Guerra Final state was active."
+        },
+        "secretUnlocked": {
+          "type": "boolean",
+          "description": "Whether the 9th character '?' (1000 Elos) is unlocked."
+        },
+        "highScore": {
+          "type": "integer",
+          "description": "Highest score achieved by the player."
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Server timestamp when the save was created (clients submit FieldValue.serverTimestamp())."
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Server timestamp of the latest cloud auto-save (clients submit FieldValue.serverTimestamp())."
+        }
+      },
+      "required": [
+        "userId",
+        "playerName",
+        "activeCharacterId",
+        "keysCollected",
+        "enemiesDefeated",
+        "mediumEnemiesCycle",
+        "currentRealmIndex",
+        "bossesDefeated",
+        "satantiDowns",
+        "keyTimerMaxSeconds",
+        "finalWarActive",
+        "secretUnlocked",
+        "highScore",
+        "createdAt",
+        "updatedAt"
+      ]
+    }
+  },
+  "firestore": {
+    "/users/{userId}/game_saves/{saveId}": {
+      "schema": {
+        "$ref": "#/entities/GameSave"
+      },
+      "description": "Per-user cloud save state for Brasilândia: A Chave dos 1000 Elos."
+    }
+  }
+}

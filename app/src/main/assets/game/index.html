@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+  <title>Brasilândia: A Chave dos 1000 Elos</title>
+  <link rel="stylesheet" href="./styles.css" />
+  <script type="importmap">
+    {
+      "imports": {
+        "three": "./vendor/three.module.min.js"
+      }
+    }
+  </script>
+</head>
+<body>
+  <div id="gameRoot">
+    <canvas id="renderCanvas" aria-label="Mundo 3D Brasilândia"></canvas>
+    <div id="floatingLayer" class="floating-layer" aria-hidden="true"></div>
+
+    <!-- Tela Inicial Compacta sobre o Mundo 3D Vivo -->
+    <div id="loadingOverlay" class="overlay-screen">
+      <div class="loading-card">
+        <div class="crest-emblem">✦</div>
+        <h1>BRASILÂNDIA</h1>
+        <h2>A Chave dos 1000 Elos</h2>
+        <p class="author-credit">Autoria exclusiva de <strong>Dayvisson Silva</strong></p>
+        <div class="loading-bar-track">
+          <div id="loadingBarFill" class="loading-bar-fill"></div>
+        </div>
+        <p id="loadingStatusText" class="loading-status">Iniciando mundo 3D...</p>
+        <button id="btnStartGame" class="btn-primary hidden" type="button">Jogar Agora</button>
+      </div>
+    </div>
+
+    <!-- HUD Compacto Superior -->
+    <header id="hudTop" class="hud-top hidden">
+      <div class="hud-telemetry">
+        <div class="telemetry-row">
+          <span class="t-item">🔑 <strong id="hudKeys">0/1000</strong></span>
+          <span class="t-sep">•</span>
+          <span class="t-item timer-pill" id="timerChip">⏳ <strong id="hudTimer">30.0s</strong></span>
+          <span class="t-sep">•</span>
+          <span class="t-item">🌀 <strong id="hudCycle">0/20</strong></span>
+        </div>
+        <div class="telemetry-sub">
+          <span id="hudRealm">Brasilândia (Planície)</span>
+          <span>•</span>
+          <span id="hudCharName">Ever Negguer</span>
+          <span>(<span id="hudFlightState">Solo</span>)</span>
+        </div>
+      </div>
+
+      <div class="hud-quick-actions">
+        <button id="btnCharacters" class="icon-btn" type="button" title="Personagens (9)" aria-label="Personagens">👥</button>
+        <button id="btnStory" class="icon-btn" type="button" title="História Narrada" aria-label="História">📖</button>
+        <button id="btnMenuToggle" class="icon-btn" type="button" title="Mais Opções" aria-label="Mais Opções">☰</button>
+      </div>
+    </header>
+
+    <!-- Menu Rápido Expansível -->
+    <nav id="quickDrawer" class="quick-drawer hidden" aria-label="Ações Rápidas">
+      <button id="btnCloudLogin" class="drawer-btn btn-cloud hidden" type="button">☁️ Salvar na Nuvem</button>
+      <button id="btnFinalWar" class="drawer-btn btn-war" type="button">🔥 Guerra Final</button>
+      <button id="btnWhatsApp" class="drawer-btn btn-wa" type="button">📲 WhatsApp</button>
+      <button id="btnAudioToggle" class="drawer-btn" type="button">🔊 Som Ligado</button>
+    </nav>
+
+    <!-- Minimapa Compacto -->
+    <aside id="minimapPanel" class="minimap-panel compact hidden">
+      <div class="minimap-header">
+        <span class="minimap-title">Mapa</span>
+        <div class="minimap-controls">
+          <button id="btnMinimapSize" class="mini-icon-btn" type="button" title="Expandir/Compactar">⤢</button>
+          <button id="btnMinimapMin" class="mini-icon-btn" type="button" title="Minimizar">−</button>
+        </div>
+      </div>
+      <canvas id="minimapCanvas" width="144" height="144"></canvas>
+    </aside>
+
+    <!-- Banners Discretos -->
+    <div id="statusBanners" class="status-banners hidden">
+      <div id="bossBanner" class="banner boss-banner hidden">
+        <span id="bossBannerTitle">Chefona Meyanga</span>
+        <div class="boss-hp-track"><div id="bossHpFill" class="boss-hp-fill"></div></div>
+      </div>
+      <div id="captureBanner" class="banner capture-banner hidden">
+        ⛓️ Satãnti Borô prendeu você! (-30s/s) Ataque para se libertar!
+      </div>
+      <div id="auraBanner" class="banner aura-banner hidden">
+        ✦ AURA DIVINA: <span id="auraCountdown">12.0s</span>
+      </div>
+      <div id="toastBanner" class="banner toast-banner hidden"></div>
+    </div>
+
+    <!-- Barra Elemental Compacta (Centro Inferior) -->
+    <div id="hudBottom" class="hud-bottom hidden">
+      <div class="element-bar" role="group" aria-label="Elementos">
+        <button class="elem-btn active" data-elem="0" type="button" title="1 - Fogo">🔥<span>1</span></button>
+        <button class="elem-btn" data-elem="1" type="button" title="2 - Trovão">⚡<span>2</span></button>
+        <button class="elem-btn" data-elem="2" type="button" title="3 - Vento">🌪️<span>3</span></button>
+        <button class="elem-btn" data-elem="3" type="button" title="4 - Luz Divina">✨<span>4</span></button>
+      </div>
+    </div>
+
+    <!-- Controles Ergonômicos (Joystick + Ações) -->
+    <div id="touchControls" class="touch-controls hidden">
+      <div id="joystickZone" class="joystick-zone" aria-label="Mover Personagem">
+        <div id="joystickKnob" class="joystick-knob"></div>
+      </div>
+
+      <div class="touch-right-pad">
+        <div id="flightAltitudePad" class="flight-pad hidden">
+          <button id="btnTouchUp" class="touch-circle mini" type="button" aria-label="Subir (R)">▲</button>
+          <button id="btnTouchDown" class="touch-circle mini" type="button" aria-label="Descer (Q)">▼</button>
+        </div>
+        <div class="skill-arc">
+          <button id="btnToggleFlight" class="touch-circle skill" type="button" title="Voar (F)">🪽</button>
+          <button id="btnAuraDivina" class="touch-circle aura" type="button" title="Aura Divina Manual (E)">✦</button>
+        </div>
+        <button id="btnTouchAttack" class="touch-circle attack" type="button" aria-label="Atacar">⚔️</button>
+      </div>
+    </div>
+
+    <!-- Modal de Seleção de Personagens -->
+    <div id="characterModal" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="charModalTitle">
+      <div class="modal-card">
+        <div class="modal-header">
+          <h2 id="charModalTitle">Os 9 Portadores dos Elos</h2>
+          <button id="btnCloseCharModal" class="modal-close" type="button" aria-label="Fechar">✕</button>
+        </div>
+        <p class="modal-subtitle">Todos com asas 3D articuladas em camadas de penas e combate elemental.</p>
+        <div id="characterGrid" class="character-grid"></div>
+      </div>
+    </div>
+
+    <!-- Modal de História Narrada -->
+    <div id="storyModal" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="storyModalTitle">
+      <div class="modal-card story-card">
+        <div class="modal-header">
+          <h2 id="storyModalTitle">Crônicas de Brasilândia</h2>
+          <button id="btnCloseStoryModal" class="modal-close" type="button" aria-label="Fechar">✕</button>
+        </div>
+        <div class="story-controls">
+          <button id="btnNarratePlay" class="btn-primary compact-btn" type="button">🔊 Ouvir (pt-BR)</button>
+          <button id="btnNarrateStop" class="drawer-btn" type="button">⏹ Parar</button>
+          <span id="narrationStatus" class="narration-status">Pronto para narrar</span>
+        </div>
+        <div id="storyContent" class="story-content"></div>
+        <div class="modal-footer">
+          <span class="author-foot">Brasilândia: A Chave dos 1000 Elos — Autoria exclusiva de Dayvisson Silva</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script type="module" src="./js/main.js"></script>
+</body>
+</html>
